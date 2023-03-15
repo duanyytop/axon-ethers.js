@@ -17,13 +17,14 @@
     "noUnusedLocals": true,
     "preserveSymlinks": true,
     "preserveWatchOutput": true,
+    "skipLibCheck": true,
     "pretty": false,
     "rootDir": "./src.ts",
     "strict": true,
     "sourceMap": true,
     "target": "es2022"
   },
-  "exclude": [ ],
+  "exclude": [],
   "include": [
     "./src.ts/**/*.ts"
   ],

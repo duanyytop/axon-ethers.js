@@ -12,11 +12,11 @@ import type { Wordlist } from "../wordlists/index.js";
 import type { TestCaseMnemonic, TestCaseMnemonicNode } from "./types.js";
 
 
-declare global {
-    class TextDecoder {
-        decode(data: Uint8Array): string;
-    }
-}
+// declare global {
+//     class TextDecoder {
+//         decode(data: Uint8Array): string;
+//     }
+// }
 
 
 const decoder = new TextDecoder();

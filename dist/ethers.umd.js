@@ -6007,7 +6007,6 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
          */
         get r() { return this.#r; }
         set r(value) {
-            assertArgument(dataLength(value) === 32, "invalid r", "value", value);
             this.#r = hexlify(value);
         }
         /**
@@ -6015,10 +6014,7 @@ const __$G = (typeof globalThis !== 'undefined' ? globalThis: typeof window !== 
          */
         get s() { return this.#s; }
         set s(_value) {
-            assertArgument(dataLength(_value) === 32, "invalid r", "value", _value);
-            const value = hexlify(_value);
-            assertArgument(parseInt(value.substring(0, 3)) < 8, "non-canonical s", "value", value);
-            this.#s = value;
+            this.#s = hexlify(_value);
         }
         /**
          *  The ``v`` value for a signature.

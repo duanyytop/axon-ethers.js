@@ -1,5 +1,5 @@
 import { ZeroHash } from "../constants/index.js";
-import { concat, dataLength, getBigInt, getBytes, getNumber, hexlify, toBeArray, isHexString, zeroPadValue, assertArgument, assertPrivate } from "../utils/index.js";
+import { concat, getBigInt, getBytes, getNumber, hexlify, toBeArray, isHexString, zeroPadValue, assertArgument, assertPrivate } from "../utils/index.js";
 // Constants
 const BN_0 = BigInt(0);
 const BN_1 = BigInt(1);
@@ -30,7 +30,6 @@ export class Signature {
      */
     get r() { return this.#r; }
     set r(value) {
-        assertArgument(dataLength(value) === 32, "invalid r", "value", value);
         this.#r = hexlify(value);
     }
     /**
@@ -38,10 +37,7 @@ export class Signature {
      */
     get s() { return this.#s; }
     set s(_value) {
-        assertArgument(dataLength(_value) === 32, "invalid r", "value", _value);
-        const value = hexlify(_value);
-        assertArgument(parseInt(value.substring(0, 3)) < 8, "non-canonical s", "value", value);
-        this.#s = value;
+        this.#s = hexlify(_value);
     }
     /**
      *  The ``v`` value for a signature.

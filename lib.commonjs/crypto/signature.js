@@ -33,7 +33,6 @@ class Signature {
      */
     get r() { return this.#r; }
     set r(value) {
-        (0, index_js_2.assertArgument)((0, index_js_2.dataLength)(value) === 32, "invalid r", "value", value);
         this.#r = (0, index_js_2.hexlify)(value);
     }
     /**
@@ -41,10 +40,7 @@ class Signature {
      */
     get s() { return this.#s; }
     set s(_value) {
-        (0, index_js_2.assertArgument)((0, index_js_2.dataLength)(_value) === 32, "invalid r", "value", _value);
-        const value = (0, index_js_2.hexlify)(_value);
-        (0, index_js_2.assertArgument)(parseInt(value.substring(0, 3)) < 8, "non-canonical s", "value", value);
-        this.#s = value;
+        this.#s = (0, index_js_2.hexlify)(_value);
     }
     /**
      *  The ``v`` value for a signature.

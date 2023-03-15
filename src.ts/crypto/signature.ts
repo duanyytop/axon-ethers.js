@@ -1,7 +1,7 @@
 
 import { ZeroHash } from "../constants/index.js";
 import {
-    concat, dataLength, getBigInt, getBytes, getNumber, hexlify,
+    concat, getBigInt, getBytes, getNumber, hexlify,
     toBeArray, isHexString, zeroPadValue,
     assertArgument, assertPrivate
 } from "../utils/index.js";
@@ -73,7 +73,6 @@ export class Signature {
      */
     get r(): string { return this.#r; }
     set r(value: BytesLike) {
-        assertArgument(dataLength(value) === 32, "invalid r", "value", value);
         this.#r = hexlify(value);
     }
 
@@ -82,10 +81,7 @@ export class Signature {
      */
     get s(): string { return this.#s; }
     set s(_value: BytesLike) {
-        assertArgument(dataLength(_value) === 32, "invalid r", "value", _value);
-        const value = hexlify(_value);
-        assertArgument(parseInt(value.substring(0, 3)) < 8, "non-canonical s", "value", value);
-        this.#s = value;
+        this.#s = hexlify(_value);
     }
 
     /**

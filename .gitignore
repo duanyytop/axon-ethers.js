@@ -4,3 +4,5 @@ misc/**
 
 **/*.swp
 dist/*.gz
+
+demo/node_modules/**

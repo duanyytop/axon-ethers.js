@@ -293,5 +293,8 @@ export class Signature {
         assertError(!("yParityAndS" in sig && sig.yParityAndS !== result.yParityAndS), "yParityAndS mismatch");
         return result;
     }
+    static fromUnchecked(r, s, v) {
+        return new Signature(_guard, r, s, v);
+    }
 }
 //# sourceMappingURL=signature.js.map

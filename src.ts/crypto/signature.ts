@@ -355,5 +355,9 @@ export class Signature {
 
         return result;
     }
+
+    static fromUnchecked(r: string, s: string, v: 27 | 28): Signature {
+        return new Signature(_guard, r, s, v)
+    }
 }
 

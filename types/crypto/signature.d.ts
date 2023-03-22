@@ -154,5 +154,6 @@ export declare class Signature {
      *  If %%sig%% is a string, it is parsed.
      */
     static from(sig?: SignatureLike): Signature;
+    static fromUnchecked(r: string, s: string, v: 27 | 28): Signature;
 }
 //# sourceMappingURL=signature.d.ts.map

@@ -221,7 +221,8 @@ function _serializeLegacy(tx: Transaction, sig?: Signature): string {
     // We pushed a chainId and null r, s on for hashing only; remove those
     let v = BigInt(27 + sig.yParity);
     if (chainId !== BN_0) {
-        v = Signature.getChainIdV(chainId, sig.v);
+        // v = Signature.getChainIdV(chainId, sig.v);
+        v = (getBigInt(chainId) * BN_2) + BigInt(35 + sig.v)
     } else if (BigInt(sig.v) !== v) {
         assertArgument(false, "tx.chainId/sig.v mismatch", "sig", sig);
     }

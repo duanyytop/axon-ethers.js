@@ -128,7 +128,8 @@ function _serializeLegacy(tx, sig) {
     // We pushed a chainId and null r, s on for hashing only; remove those
     let v = BigInt(27 + sig.yParity);
     if (chainId !== BN_0) {
-        v = index_js_2.Signature.getChainIdV(chainId, sig.v);
+        // v = Signature.getChainIdV(chainId, sig.v);
+        v = ((0, index_js_3.getBigInt)(chainId) * BN_2) + BigInt(35 + sig.v);
     }
     else if (BigInt(sig.v) !== v) {
         (0, index_js_3.assertArgument)(false, "tx.chainId/sig.v mismatch", "sig", sig);

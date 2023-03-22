@@ -90,25 +90,39 @@ const start = async () => {
 
   const signedTx = await buildCKBTx(lock, axonTx.unsignedHash)
 
+  /**
+   * pub struct CKBTxMockByRef {
+      pub cell_deps: Vec<CellDep>,
+      pub header_deps: Vec<H256>,
+      pub input_lock: CellWithData,
+      pub out_point_addr_source: AddressSource,
+    }
+
+    pub struct CellWithData {
+      pub type_script: Option<Script>,
+      pub lock_script: Script,
+      pub data: Bytes,
+    }
+   */
   const sigR = [
     [toBuffer(signedTx.cellDeps[0].outPoint.txHash), toBuffer(signedTx.cellDeps[0].outPoint.index), 1],
     [],
-    [toBuffer(lock.codeHash), toBuffer(lock.args), 2],
+    [[], [toBuffer(lock.codeHash), toBuffer(lock.args), 1], []],
+    [0, 0]
   ]
   const rlpSigR = bytesToHex(Buffer.concat([Buffer.from([2]), RLP.encode(sigR)]))
   const sigS = [[toBuffer(signedTx.witnesses[0].lock), [], []]]
   const rlpSigS = bytesToHex(RLP.encode(sigS))
 
-  console.log(rlpSigR)
+  console.log("r", JSON.stringify(sigR))
+  console.log("s", JSON.stringify(sigS))
 
   axonTx.signature = Signature.fromUnchecked(rlpSigR, rlpSigS, 0)
 
-  console.log("axon signed hash: ", axonTx.hash)
-
-  console.log(JSON.stringify(axonTx))
+  // console.log(JSON.stringify(axonTx))
 
   const provider = new JsonRpcProvider(AXON_RPC_RUL)
-  console.log(axonTx.serialized)
+  // console.log(axonTx.serialized)
   const ret = await provider.send('eth_sendRawTransaction', [axonTx.serialized])
 
   console.log(JSON.stringify(ret))

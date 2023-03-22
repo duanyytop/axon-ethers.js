@@ -6,7 +6,6 @@ const {
   keccak160,
   keyFromPrivate,
   SigAlg,
-  signSecp256r1Tx,
   utf8ToHex,
   remove0x,
   calcSignedWitnessLock,
@@ -14,12 +13,17 @@ const {
 const { addressToScript, scriptToHash, bytesToHex } = require('@nervosnetwork/ckb-sdk-utils')
 const { JsonRpcProvider } = require('../lib.commonjs/providers')
 const { Transaction } = require('../lib.commonjs/transaction/transaction')
-const { parseEther } = require('../lib.commonjs/utils')
+const { Signature } = require('../lib.commonjs/crypto/signature')
+const { parseEther, parseUnits} = require('../lib.commonjs/utils')
 const RLP = require('rlp')
+const { getAddress } = require('../lib.commonjs/address')
 
 const MAIN_PRIVATE_KEY = '0x4271c23380932c74a041b4f56779e5ef60e808a127825875f906260f1f657761'
 // const ADDRESS = 'ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqq9sfrkfah2cj79nyp7e6p283ualq8779rscnjmrj'
 const TO_AXON_ADDRESS = '0xCb9112D826471E7DEB7Bc895b1771e5d676a14AF'
+
+const AXON_RPC_RUL = 'http://axon-rpc-url'
+const CKB_RPC_URL = 'http://127.0.0.1:8114'
 
 const OUTPUT_CAPACITY = BigInt(100) * BigInt(100000000)
 
@@ -36,8 +40,8 @@ const buildCKBTx = async (lock, axonUnsignedHash) => {
   }
 
   const collector = new Collector({
-    ckbNodeUrl: 'http://127.0.0.1:8114',
-    ckbIndexerUrl: 'http://127.0.0.1:8114',
+    ckbNodeUrl: CKB_RPC_URL,
+    ckbIndexerUrl: CKB_RPC_URL,
   })
   const cells = await collector.getCells(lock)
   if (cells == undefined || cells.length == 0) {
@@ -71,32 +75,43 @@ const start = async () => {
   const lock = addressToScript(address)
   const axonAddress = `0x${keccak160(scriptToHash(lock))}`
   console.log('CKB address', address)
+  // 0x9447a236092f194ac774e9aaa5294c87e3ad50fd
   console.log('Axon address', axonAddress)
 
-  // const provider = new JsonRpcProvider(AXON_RPC_RUL)
-  let unsignedTx = new Transaction()
-  unsignedTx.from = axonAddress
-  unsignedTx.to = TO_AXON_ADDRESS
-  unsignedTx.value = parseEther('1.0')
-  unsignedTx.chainId = 5
-  unsignedTx.from = axonAddress
+  let axonTx = new Transaction()
+  axonTx.from = axonAddress
+  axonTx.to = TO_AXON_ADDRESS
+  axonTx.value = parseEther('1.0')
+  axonTx.chainId = 2022
+  axonTx.type = 0
+  axonTx.from = axonAddress
+  axonTx.gasLimit = 21000
+  axonTx.gasPrice = parseUnits("0.14085197", "gwei");
 
-  const signedTx = await buildCKBTx(lock, unsignedTx.unsignedHash)
+  const signedTx = await buildCKBTx(lock, axonTx.unsignedHash)
 
   const sigR = [
     [toBuffer(signedTx.cellDeps[0].outPoint.txHash), toBuffer(signedTx.cellDeps[0].outPoint.index), 1],
     [],
     [toBuffer(lock.codeHash), toBuffer(lock.args), 2],
   ]
-
-  const rlpSigR = RLP.encode(sigR)
-  console.log(bytesToHex(rlpSigR))
-
-  console.log(signedTx.witnesses[0])
+  const rlpSigR = bytesToHex(Buffer.concat([Buffer.from([2]), RLP.encode(sigR)]))
   const sigS = [[toBuffer(signedTx.witnesses[0].lock), [], []]]
+  const rlpSigS = bytesToHex(RLP.encode(sigS))
 
-  const rlpSigS = RLP.encode(sigS)
-  console.log(bytesToHex(rlpSigS))
+  console.log(rlpSigR)
+
+  axonTx.signature = Signature.fromUnchecked(rlpSigR, rlpSigS, 0)
+
+  console.log("axon signed hash: ", axonTx.hash)
+
+  console.log(JSON.stringify(axonTx))
+
+  const provider = new JsonRpcProvider(AXON_RPC_RUL)
+  console.log(axonTx.serialized)
+  const ret = await provider.send('eth_sendRawTransaction', [axonTx.serialized])
+
+  console.log(JSON.stringify(ret))
 }
 
 start()

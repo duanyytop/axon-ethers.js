@@ -1,12 +1,10 @@
 const {
   addressFromPrivateKey,
-  blake256,
   Collector,
   getJoyIDCellDep,
   keccak160,
   keyFromPrivate,
   SigAlg,
-  utf8ToHex,
   remove0x,
   calcSignedWitnessLock,
 } = require('@nervina-labs/joyid-sdk')

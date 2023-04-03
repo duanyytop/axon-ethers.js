@@ -344,10 +344,10 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
 
-"@nervina-labs/joyid-sdk@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@nervina-labs/joyid-sdk/-/joyid-sdk-0.2.2.tgz#cc028cf3cfdabd88830aebfc9014824b6206780e"
-  integrity sha512-kU+9X08iTNN6P7BpTwvuk8f5YhcxZtq09idI0/7P6l180TB/85BQtqXbVRcDgUy0RQN0P/ou2BE7qTnIju0r5g==
+"@nervina-labs/joyid-sdk@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@nervina-labs/joyid-sdk/-/joyid-sdk-0.2.3.tgz#e9e0dc8793709a9b054bf97fd28a8b9b3ff02700"
+  integrity sha512-3zFlzM7poOm/Sp61zQIAh0be+d49XZ/edqPkdkQqbU7XXthkp08MfkSFXXlCihfDoMG4RDo9RA2hUthTejzSQQ==
   dependencies:
     "@nervosnetwork/ckb-sdk-core" "^0.103.0"
     "@nervosnetwork/ckb-sdk-utils" "^0.103.0"

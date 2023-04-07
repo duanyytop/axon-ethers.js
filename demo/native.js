@@ -148,7 +148,7 @@ const transferWithMainkey = async () => {
   axonTx.type = 0
   axonTx.from = axonAddress
   axonTx.gasLimit = 21000
-  axonTx.gasPrice = parseUnits("0.14085197", "gwei");
+  axonTx.gasPrice = parseUnits("0.14", "gwei");
 
   const txCount = await provider.getTransactionCount(axonAddress)
   axonTx.nonce = txCount

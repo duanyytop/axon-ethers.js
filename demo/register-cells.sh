@@ -15,7 +15,7 @@ echo '{
     ]
 }' \
 | curl -H 'content-type: application/json' -d @- \
-http://emitter-rpc-rul
+http://emitter-rpc-url
 
 echo '{
     "id": 2,
@@ -34,7 +34,7 @@ echo '{
     ]
 }' \
 | curl -H 'content-type: application/json' -d @- \
-http://emitter-rpc-rul
+http://emitter-rpc-url
 
 
 echo '{
@@ -54,4 +54,4 @@ echo '{
     ]
 }' \
 | curl -H 'content-type: application/json' -d @- \
-http://emitter-rpc-rul
+http://emitter-rpc-url

@@ -15,7 +15,7 @@
     "check": "prettier --check ."
   },
   "dependencies": {
-    "@nervina-labs/joyid-sdk": "^0.2.3",
+    "@nervina-labs/joyid-sdk": "^0.2.4",
     "@nervosnetwork/ckb-sdk-core": "^0.103.0",
     "@nervosnetwork/ckb-sdk-utils": "^0.103.0",
     "@nervosnetwork/ckb-types": "^0.103.0",

@@ -22,7 +22,6 @@ const Web3 = require('web3')
   const TO_AXON_ADDRESS = '0xCb9112D826471E7DEB7Bc895b1771e5d676a14AF'
   
   const AXON_RPC_RUL = 'http://axon-rpc-url'
-  const CKB_RPC_URL = 'http://127.0.0.1:8114'
   
   // Calculate the actual occupied space according to the mock tx output cell
   const OUTPUT_CAPACITY = BigInt(106) * BigInt(100000000)
@@ -37,7 +36,7 @@ const Web3 = require('web3')
 
   const JOY_ERC20_CONTRACT_ADDRESS = "0xeF4489740eae514ed2E2FDe224aa054C606e3549";
   
-  const buildNativeCKBTx = async (lock, axonUnsignedHash) => {
+  const buildNativeCKBTx = async (axonUnsignedHash) => {
     const output = {
       capacity: `0x${OUTPUT_CAPACITY.toString(16)}`,
       lock: {
@@ -52,14 +51,6 @@ const Web3 = require('web3')
       },
     }
   
-    const collector = new Collector({
-      ckbNodeUrl: CKB_RPC_URL,
-      ckbIndexerUrl: CKB_RPC_URL,
-    })
-    const cells = await collector.getCells(lock)
-    if (cells == undefined || cells.length == 0) {
-      throw new Error('The from address has no live cells')
-    }
     const inputs = [
       {
         previousOutput: {
@@ -91,7 +82,7 @@ const Web3 = require('web3')
   const toBuffer = input => Buffer.from(remove0x(input), 'hex')
   
   const signAxonTxWithMainkey = async (lock, axonTx) => {
-    const signedTx = await buildNativeCKBTx(lock, axonTx.unsignedHash)
+    const signedTx = await buildNativeCKBTx(axonTx.unsignedHash)
   
     /**
      * pub struct CKBTxMockByRef {
@@ -160,7 +151,6 @@ const Web3 = require('web3')
     axonTx.value = 0
     axonTx.chainId = 2022
     axonTx.type = 0
-    axonTx.from = axonAddress
     axonTx.gasLimit = 50000
     axonTx.gasPrice = parseUnits("0.14", "gwei");
 

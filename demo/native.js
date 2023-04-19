@@ -16,11 +16,11 @@ const { parseEther, parseUnits, formatEther} = require('../lib.commonjs/utils')
 const RLP = require('rlp')
 
 const MAIN_PRIVATE_KEY = '0x4271c23380932c74a041b4f56779e5ef60e808a127825875f906260f1f657761'
-// const ADDRESS = 'ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqq9sfrkfah2cj79nyp7e6p283ualq8779rscnjmrj'
+// const ADDRESS = 'ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqq9sfrkfah2cj79nyp7e6p283ualq8779r8bcvscnjmrj'
+
 const TO_AXON_ADDRESS = '0xCb9112D826471E7DEB7Bc895b1771e5d676a14AF'
 
 const AXON_RPC_RUL = 'http://axon-rpc-url'
-const CKB_RPC_URL = 'http://127.0.0.1:8114'
 
 // Calculate the actual occupied space according to the mock tx output cell
 const OUTPUT_CAPACITY = BigInt(106) * BigInt(100000000)
@@ -32,7 +32,7 @@ const ALWAYS_SUCCESS_TX_HASH = "0xe3c81d510c2e71c4e259abce3884e80f7563b4088a8100
 // blake2b_hash("DummyInputOutpointTxHash")
 const AXON_INPUT_OUT_POINT_TX_HASH = "0x224b7960223b7ead6bc6e559925456696b9fc309ca5668e32fc69b4ebe25bb66"
 
-const buildNativeCKBTx = async (lock, axonUnsignedHash) => {
+const buildNativeCKBTx = async (axonUnsignedHash) => {
   const output = {
     capacity: `0x${OUTPUT_CAPACITY.toString(16)}`,
     lock: {
@@ -47,14 +47,6 @@ const buildNativeCKBTx = async (lock, axonUnsignedHash) => {
     },
   }
 
-  const collector = new Collector({
-    ckbNodeUrl: CKB_RPC_URL,
-    ckbIndexerUrl: CKB_RPC_URL,
-  })
-  const cells = await collector.getCells(lock)
-  if (cells == undefined || cells.length == 0) {
-    throw new Error('The from address has no live cells')
-  }
   const inputs = [
     {
       previousOutput: {
@@ -80,14 +72,14 @@ const buildNativeCKBTx = async (lock, axonUnsignedHash) => {
   rawTx.witnesses = rawTx.inputs.map((_, i) => (i > 0 ? '0x' : { lock: '', inputType: '', outputType: '' }))
   const key = keyFromPrivate(MAIN_PRIVATE_KEY, SigAlg.Secp256r1)
   rawTx.witnesses[0].lock = calcSignedWitnessLock(key, rawTx)
-  console.log(JSON.stringify(rawTx))
+  // console.log(JSON.stringify(rawTx))
   return rawTx
 }
 
 const toBuffer = input => Buffer.from(remove0x(input), 'hex')
 
 const signAxonTxWithMainkey = async (lock, axonTx) => {
-  const signedTx = await buildNativeCKBTx(lock, axonTx.unsignedHash)
+  const signedTx = await buildNativeCKBTx(axonTx.unsignedHash)
 
   /**
    * pub struct CKBTxMockByRef {
@@ -133,6 +125,7 @@ const transferWithMainkey = async () => {
   const address = addressFromPrivateKey(MAIN_PRIVATE_KEY, SigAlg.Secp256r1)
   const lock = addressToScript(address)
   const axonAddress = `0x${keccak160(scriptToHash(lock))}`
+  // ckt1qrfrwcdnvssswdwpn3s9v8fp87emat306ctjwsm3nmlkjg8qyza2cqgqq9sfrkfah2cj79nyp7e6p283ualq8779rscnjmrj
   console.log('CKB address', address)
   // 0x9447a236092f194ac774e9aaa5294c87e3ad50fd
   console.log('Axon address', axonAddress)
@@ -143,7 +136,7 @@ const transferWithMainkey = async () => {
   let axonTx = new Transaction()
   axonTx.from = axonAddress
   axonTx.to = TO_AXON_ADDRESS
-  axonTx.value = parseEther('1.0')
+  axonTx.value = parseEther('0.01')
   axonTx.chainId = 2022
   axonTx.type = 0
   axonTx.from = axonAddress
